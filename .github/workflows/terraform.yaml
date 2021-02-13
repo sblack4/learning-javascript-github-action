@@ -1,0 +1,88 @@
+---
+on:
+  # push:
+  issue_comment:
+  # pull_request:
+  pull_request_review:
+  pull_request_review_comment:
+
+jobs:
+
+  plan:
+    runs-on: ubuntu-latest
+    name: A job to say hello
+    steps:
+
+      - name: Echo github obj
+        run: echo ${{ toJson(github) }}
+        continue-on-error: true
+
+      - uses: actions/checkout@v2
+
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 0.12.25
+      
+      - id: plan
+        continue-on-error: true
+        run: |     
+          cd test
+          terraform init
+          terraform plan -no-color -out plan.out
+
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v2
+        with:
+          name: my-artifact
+          path: test/plan.out
+          retention-days: 5
+
+      - uses: actions/github-script@0.9.0
+        if: github.event_name == 'pull_request'
+        env:
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+
+            <details><summary>Show Plan</summary>
+
+            \`\`\`${process.env.PLAN}\`\`\`
+
+            </details>
+
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+
+  apply:
+    name: A job to say hello
+    runs-on: ubuntu-latest
+    needs: plan
+    # if: github.event
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 0.12.25
+
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: my-artifact
+      
+      - run: |
+          cd test
+          terraform init
+          echo 'brrrrrahhhht!'
+          mv my-artifact plan.out
+          terraform apply "plan.out"
