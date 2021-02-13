@@ -1,0 +1,24 @@
+{
+  "name": "learning-javascript-github-action",
+  "version": "1.0.0",
+  "description": "Learning to write GitHub Actions, https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sblack4/learning-javascript-github-action.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sblack4/learning-javascript-github-action/issues"
+  },
+  "homepage": "https://github.com/sblack4/learning-javascript-github-action#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.6",
+    "@actions/github": "^4.0.0"
+  }
+}
