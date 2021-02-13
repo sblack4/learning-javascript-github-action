@@ -2,6 +2,8 @@
 on:
   push:
   issue_comment:
+  pull_request:
+  pull_request_review:
   pull_request_review_comment:
 
 jobs:
@@ -13,6 +15,7 @@ jobs:
 
       - name: Echo github obj
         run: echo ${{ toJson(github) }}
+        continue-on-error: true
 
       - uses: actions/checkout@v2
 
