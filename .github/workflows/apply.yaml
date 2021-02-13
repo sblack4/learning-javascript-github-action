@@ -16,8 +16,15 @@ jobs:
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 0.12.25
+
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: my-artifact
       
       - run: |     
           cd test
           terraform init
           echo 'brrrrrahhhht!'
+          mv my-artifact plan.out
+          terraform apply "plan.out"
