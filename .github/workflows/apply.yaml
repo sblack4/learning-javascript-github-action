@@ -1,0 +1,23 @@
+---
+on:
+  pull_request:
+    types: [opened]
+  issue_comment:
+    types: [created]
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    name: A job to say hello
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 0.12.25
+      
+      - run: |     
+          cd test
+          terraform init
+          echo 'brrrrrahhhht!'

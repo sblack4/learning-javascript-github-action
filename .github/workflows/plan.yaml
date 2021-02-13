@@ -1,8 +1,9 @@
 ---
-on: [push]
+on:
+  push:
 
 jobs:
-  hello_world_job:
+  plan:
     runs-on: ubuntu-latest
     name: A job to say hello
     steps:
@@ -14,11 +15,8 @@ jobs:
           terraform_version: 0.12.25
       
       - run: |     
-          ls 
-          pwd
-          whoami
-
           cd test
+          terraform init
           terraform plan -out plan.out
 
       - name: 'Upload Artifact'
