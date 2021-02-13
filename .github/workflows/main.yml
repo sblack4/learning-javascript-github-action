@@ -11,7 +11,11 @@ jobs:
         with:
           terraform_version: 0.12.25
       
-      - run: |
+      - run: |     
+          ls 
+          pwd
+          whoami
+
           cd test
           terraform plan -out plan.out
 
